@@ -1,8 +1,7 @@
 ---
 name: fragments-cloud-setup
-description: Set up Fragments Cloud design governance in your project. Installs @fragments-sdk/govern, configures your API key, creates a governance config, runs your first check, and optionally adds CI/CD. Use when the user wants to add design governance, connect to Fragments Cloud, run design checks, or set up Fragments governance in their project.
+description: Set up Fragments Cloud design governance in your project. Installs @fragments-sdk/govern, guides API key configuration, creates a governance config, runs your first check, and optionally adds CI/CD. Use when the user wants to add design governance, connect to Fragments Cloud, run design checks, or set up Fragments governance in their project.
 disable-model-invocation: true
-argument-hint: "[api-key]"
 ---
 
 # Fragments Cloud Setup
@@ -36,15 +35,19 @@ The `govern` package provides the governance engine. The `cli` package provides 
 
 ## 3. Configure the API key
 
-- Use the argument if provided: `$ARGUMENTS`
-- Otherwise ask: "Paste your Fragments Cloud API key (from the onboarding dashboard or Settings > API Keys):"
-- Write to `.env` (create if missing):
-  ```
-  FRAGMENTS_API_KEY=<key>
-  ```
-- Also write to `.env.local` if that file already exists.
-- Ensure `.env` and `.env.local` are in `.gitignore`. Create `.gitignore` if needed.
-- Also add `.agents/` to `.gitignore` if not already present (this is where installed skills live).
+**IMPORTANT: Never ask the user to paste their API key into the chat or accept it as an argument. Never write secrets directly.**
+
+Instead, guide the user to set it themselves:
+
+1. Tell the user to add their API key to `.env` (or `.env.local`) manually:
+   ```
+   FRAGMENTS_API_KEY=fc_your_key_here
+   ```
+   Say: "Add your Fragments Cloud API key to `.env`. You can find it in the onboarding dashboard or Settings > API Keys."
+
+2. Ensure `.env` and `.env.local` are in `.gitignore`. Create `.gitignore` if needed.
+3. Add `.agents/` to `.gitignore` if not already present (this is where installed skills live).
+4. After the user confirms the key is set, verify it exists by checking that `.env` contains a `FRAGMENTS_API_KEY` line (do NOT read or output the actual value).
 
 ## 4. Create governance config
 
@@ -130,7 +133,7 @@ After creating the CI config, remind the user to add `FRAGMENTS_API_KEY` as a se
 
 Summarize what was done:
 - `@fragments-sdk/govern` and `@fragments-sdk/cli` installed
-- API key configured (remind them not to commit `.env`)
+- API key configured in `.env` (remind them not to commit it)
 - Governance config created at `fragments.config.ts`
 - First check ran -- results visible in Fragments Cloud dashboard
 - CI workflow created (if chosen)
