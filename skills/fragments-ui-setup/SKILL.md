@@ -24,6 +24,12 @@ Set up the `@fragments-sdk/ui` component library -- from install to rendering yo
 
 ## 2. Install the UI package
 
+First check if `@fragments-sdk/ui` is already available:
+- In a **monorepo** with workspace dependencies (look for `"workspace:*"` or `"workspace:^"` in `package.json`), the package may already be linked. If so, **skip the install step**.
+- Also check parent directories for `pnpm-workspace.yaml` or a `workspaces` field.
+
+If not already installed:
+
 ```bash
 <package-manager> add @fragments-sdk/ui
 ```

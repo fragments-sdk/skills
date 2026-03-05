@@ -22,6 +22,12 @@ Set up design governance with Fragments Cloud -- from zero to running checks wit
 
 ## 2. Install the governance SDK and CLI
 
+First check if these are already available:
+- In a **monorepo** with workspace dependencies (look for `"workspace:*"` or `"workspace:^"` in `package.json`), the packages may already be linked. Check if `@fragments-sdk/govern` and `@fragments-sdk/cli` appear in `dependencies` or `devDependencies`. If they're workspace deps, **skip the install step**.
+- Also check if a `pnpm-workspace.yaml` or `workspaces` field exists in a parent directory -- if so, you're in a monorepo.
+
+If not already installed:
+
 ```bash
 <package-manager> add @fragments-sdk/govern @fragments-sdk/cli
 ```
