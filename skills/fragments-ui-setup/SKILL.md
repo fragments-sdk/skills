@@ -132,7 +132,9 @@ If `$ARGUMENTS` contains `--with-mcp`, or ask the user: "Want to add the Fragmen
 
 If yes:
 
-Add to `.claude/settings.json` (create if needed):
+Read `.claude/settings.json` if it exists. Merge the Fragments MCP server into the existing `mcpServers` object -- do NOT overwrite any existing servers. If the file doesn't exist, create it.
+
+The resulting `mcpServers` should include:
 ```json
 {
   "mcpServers": {
@@ -147,12 +149,16 @@ Add to `.claude/settings.json` (create if needed):
 This enables the AI agent to discover components, generate UI, inspect props, check performance, and validate governance -- all from within the conversation.
 
 Explain the key tools now available:
-- `fragments_discover` -- find the right component for any use case
-- `fragments_implement` -- get everything needed to build a feature in one call
-- `fragments_inspect` -- deep dive into any component's props and examples
-- `fragments_blocks` -- find pre-built composition patterns
+- `mcp__fragments__fragments_discover` -- find the right component for any use case
+- `mcp__fragments__fragments_implement` -- get everything needed to build a feature in one call
+- `mcp__fragments__fragments_inspect` -- deep dive into any component's props and examples
+- `mcp__fragments__fragments_blocks` -- find pre-built composition patterns
 
-## 7. Configure TypeScript paths (if needed)
+## 7. Update .gitignore
+
+Add `.agents/` to `.gitignore` if not already present (this is where installed skills live). Create `.gitignore` if needed.
+
+## 8. Configure TypeScript paths (if needed)
 
 If the project uses path aliases, ensure `@fragments-sdk/ui` resolves correctly. Check `tsconfig.json` for `compilerOptions.paths` and add if missing:
 
@@ -164,7 +170,7 @@ If the project uses path aliases, ensure `@fragments-sdk/ui` resolves correctly.
 }
 ```
 
-## 8. Confirm completion
+## 9. Confirm completion
 
 Summarize what was done:
 - `@fragments-sdk/ui` and `@phosphor-icons/react` installed

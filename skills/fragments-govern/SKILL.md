@@ -23,7 +23,7 @@ If no mode is specified, default to `check`.
 
 ## Check mode
 
-1. Verify `@fragments-sdk/govern` is installed. If not, offer to run `/fragments-setup`.
+1. Verify `@fragments-sdk/govern` and `@fragments-sdk/cli` are installed. If not, offer to run `/fragments-cloud-setup`.
 2. If a file path is provided in `$ARGUMENTS`, scope the check to that path.
 3. Run:
    ```bash

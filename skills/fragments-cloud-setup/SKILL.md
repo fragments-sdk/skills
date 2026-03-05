@@ -20,11 +20,13 @@ Set up design governance with Fragments Cloud -- from zero to running checks wit
 - Detect the framework (React, Next.js, Vue, Nuxt, Svelte, SvelteKit, Astro) from dependencies.
 - Check if `@fragments-sdk/ui` is already installed -- if so, note it and configure governance to work alongside it.
 
-## 2. Install the governance SDK
+## 2. Install the governance SDK and CLI
 
 ```bash
-<package-manager> add @fragments-sdk/govern
+<package-manager> add @fragments-sdk/govern @fragments-sdk/cli
 ```
+
+The `govern` package provides the governance engine. The `cli` package provides the `fragments` binary used to run checks.
 
 ## 3. Configure the API key
 
@@ -36,6 +38,7 @@ Set up design governance with Fragments Cloud -- from zero to running checks wit
   ```
 - Also write to `.env.local` if that file already exists.
 - Ensure `.env` and `.env.local` are in `.gitignore`. Create `.gitignore` if needed.
+- Also add `.agents/` to `.gitignore` if not already present (this is where installed skills live).
 
 ## 4. Create governance config
 
@@ -120,7 +123,7 @@ After creating the CI config, remind the user to add `FRAGMENTS_API_KEY` as a se
 ## 7. Confirm completion
 
 Summarize what was done:
-- `@fragments-sdk/govern` installed
+- `@fragments-sdk/govern` and `@fragments-sdk/cli` installed
 - API key configured (remind them not to commit `.env`)
 - Governance config created at `fragments.config.ts`
 - First check ran -- results visible in Fragments Cloud dashboard
