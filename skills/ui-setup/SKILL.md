@@ -1,6 +1,11 @@
 ---
-name: fragments-ui-setup
+name: fragments/ui-setup
 description: Set up the @fragments-sdk/ui component library in your project. Installs the package, configures theming, sets up the provider, adds the MCP server for AI-assisted development, and creates a sample component. Use when the user wants to add Fragments UI components to their project, set up the design system, or start building with @fragments-sdk/ui.
+type: core
+library: "@fragments-sdk/ui"
+library_version: ">=0.1.0"
+sources:
+  - "fragments-sdk/skills:skills/ui-setup/SKILL.md"
 disable-model-invocation: true
 argument-hint: "[--with-mcp]"
 ---
@@ -70,17 +75,35 @@ The stylesheet must be imported **before** any app-level CSS so tokens are avail
 
 Wrap the app root with the provider. Detect the right location:
 
-**Next.js App Router** -- `app/layout.tsx`:
+**Next.js App Router** -- `app/layout.tsx` (or a dedicated `app/providers.tsx`):
+
+In Next.js App Router, the provider must be in a Client Component because it uses React context.
+
 ```tsx
+'use client';
+
 import { FragmentsProvider } from '@fragments-sdk/ui';
 
-export default function RootLayout({ children }) {
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <FragmentsProvider theme="dark">
+      {children}
+    </FragmentsProvider>
+  );
+}
+```
+
+Then use it in the root layout:
+
+```tsx
+import '@fragments-sdk/ui/styles.css';
+import { Providers } from './providers';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <FragmentsProvider theme="dark">
-          {children}
-        </FragmentsProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
@@ -164,9 +187,9 @@ Explain the key tools now available:
 
 Add `.agents/` to `.gitignore` if not already present (this is where installed skills live). Create `.gitignore` if needed.
 
-## 8. Configure TypeScript paths (if needed)
+## 8. Configure module resolution (if needed)
 
-If the project uses path aliases, ensure `@fragments-sdk/ui` resolves correctly. Check `tsconfig.json` for `compilerOptions.paths` and add if missing:
+If the project uses TypeScript with an older `moduleResolution` setting, ensure it can resolve `@fragments-sdk/ui` subpath exports:
 
 ```json
 {
@@ -175,6 +198,8 @@ If the project uses path aliases, ensure `@fragments-sdk/ui` resolves correctly.
   }
 }
 ```
+
+This is required for imports like `@fragments-sdk/ui/styles.css` to resolve correctly. Projects using `"moduleResolution": "node"` may fail to find subpath exports.
 
 ## 9. Confirm completion
 
@@ -188,3 +213,82 @@ Summarize what was done:
 Mention related skills:
 - The `fragments-ui` skill loads automatically with best practices, token reference, and patterns
 - `/fragments-cloud-setup` to add design governance and cloud dashboard
+
+## Common mistakes
+
+### CRITICAL: CSS import after app styles
+
+Importing `@fragments-sdk/ui/styles.css` after app-level CSS causes tokens to be overridden. Components may appear unstyled or use wrong colors.
+
+Wrong -- app CSS loaded first:
+```ts
+import './globals.css';
+import '@fragments-sdk/ui/styles.css';
+```
+
+Correct -- Fragments CSS loaded first:
+```ts
+import '@fragments-sdk/ui/styles.css';
+import './globals.css';
+```
+
+### HIGH: FragmentsProvider in a Server Component (Next.js App Router)
+
+`FragmentsProvider` uses React context, which requires a Client Component. Placing it directly in `layout.tsx` without `'use client'` causes a runtime error.
+
+Wrong:
+```tsx
+// app/layout.tsx -- Server Component by default
+import { FragmentsProvider } from '@fragments-sdk/ui';
+
+export default function RootLayout({ children }) {
+  return (
+    <html><body>
+      <FragmentsProvider>{children}</FragmentsProvider>
+    </body></html>
+  );
+}
+```
+
+Correct -- extract to a Client Component:
+```tsx
+// app/providers.tsx
+'use client';
+import { FragmentsProvider } from '@fragments-sdk/ui';
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return <FragmentsProvider theme="dark">{children}</FragmentsProvider>;
+}
+```
+
+### HIGH: Missing FragmentsProvider entirely
+
+All Fragments components require the provider for theming and context. Without it, components render without tokens and may appear broken or unstyled.
+
+Wrong:
+```tsx
+import { Button } from '@fragments-sdk/ui';
+
+export default function App() {
+  return <Button>Click me</Button>; // no provider ancestor
+}
+```
+
+Correct:
+```tsx
+import { FragmentsProvider, Button } from '@fragments-sdk/ui';
+
+export default function App() {
+  return (
+    <FragmentsProvider theme="dark">
+      <Button>Click me</Button>
+    </FragmentsProvider>
+  );
+}
+```
+
+### MEDIUM: Monorepo double-install
+
+Installing `@fragments-sdk/ui` in a sub-package when the workspace root already provides it causes duplicate React instances and broken hooks.
+
+If `pnpm-workspace.yaml`, `yarn workspaces`, or `npm workspaces` exist, check the root `node_modules` first before installing.

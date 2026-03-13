@@ -1,0 +1,31 @@
+{
+  "name": "@fragments-sdk/skills",
+  "version": "0.1.0",
+  "description": "Agent skills for Fragments — the design governance platform and UI component library",
+  "keywords": [
+    "tanstack-intent",
+    "agent-skills",
+    "fragments",
+    "design-system",
+    "governance",
+    "ui-components",
+    "accessibility",
+    "design-tokens"
+  ],
+  "homepage": "https://fragments.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fragments-sdk/skills.git"
+  },
+  "license": "MIT",
+  "intent": {
+    "version": 1,
+    "repo": "fragments-sdk/skills",
+    "docs": "https://fragments.dev/docs"
+  },
+  "files": [
+    "skills/",
+    "README.md",
+    "LICENSE"
+  ]
+}
